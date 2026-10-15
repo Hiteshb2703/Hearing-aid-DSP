@@ -1,8 +1,9 @@
 from signals import read_audio, apply_filterbank
 import numpy as np
 import matplotlib.pyplot as plt
+import sys
 
-file_path = "C:/Users/hites/OneDrive/Documents/GitHub/Hearing Aid/dev-clean/LibriSpeech/dev-clean/84/121123/84-121123-0002.flac"
+file_path = sys.argv[1] if len(sys.argv) > 1 else "84-121123-0002.flac"
 audio, sr = read_audio(file_path)
 filtered_audio = apply_filterbank(audio, sr)
 
@@ -29,6 +30,8 @@ def plot_waveforms(audio, filtered_audio, sr):
 plot_waveforms(audio, filtered_audio, sr)
 reconstructed = np.sum (filtered_audio, axis=0)
 error = audio - reconstructed
+snr_db = 20*np.log10(np.sqrt(np.mean(audio**2)) / np.sqrt(np.mean(error**2)))
+print(f"Reconstruction SNR: {snr_db:.1f} dB")
 time = np.arange(len(audio)) / sr
 
 
